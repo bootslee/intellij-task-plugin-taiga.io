@@ -1,0 +1,36 @@
+<idea-plugin version="2">
+    <id>com.busybusy.Taiga.io.Task</id>
+    <name>Taiga.io Tasks</name>
+    <version>1.0.0</version>
+    <vendor email="trevor@busybusy.com" url="http://www.busybusy.com">busybusy</vendor>
+
+    <description><![CDATA[
+      <p>Enable use of <a href="https://taiga.io">taiga.io</a> as an IntelliJ task server.</p>
+    ]]></description>
+
+    <change-notes><![CDATA[
+      <p>1.0.0 - Initial Release</p>
+    ]]>
+    </change-notes>
+
+    <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Build+Number+Ranges for description -->
+    <idea-version since-build="131"/>
+
+    <!-- please see https://confluence.jetbrains.com/display/IDEADEV/Plugin+Compatibility+with+IntelliJ+Platform+Products
+         on how to target different products -->
+    <!-- uncomment to enable plugin in all products
+    <depends>com.intellij.modules.lang</depends>
+    -->
+    <depends>com.intellij.modules.platform</depends>
+    <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.tasks</depends>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <projectConfigurable instance="com.intellij.tasks.config.TaskConfigurable" id="tasks" displayName="Tasks" nonDefaultProject="true">
+            <configurable instance="com.intellij.tasks.config.TaskRepositoriesConfigurable" displayName="Servers" id="tasks.servers"/>
+        </projectConfigurable>
+
+        <tasks.repositoryType implementation="com.busybusy.intellij.tasks.taiga.TaigaRepositoryType"/>
+    </extensions>
+
+</idea-plugin>
