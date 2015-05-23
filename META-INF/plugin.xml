@@ -21,16 +21,10 @@
     <!-- uncomment to enable plugin in all products
     <depends>com.intellij.modules.lang</depends>
     -->
-    <depends>com.intellij.modules.platform</depends>
-    <depends>com.intellij.modules.lang</depends>
     <depends>com.intellij.tasks</depends>
 
     <extensions defaultExtensionNs="com.intellij">
-        <projectConfigurable instance="com.intellij.tasks.config.TaskConfigurable" id="tasks" displayName="Tasks" nonDefaultProject="true">
-            <configurable instance="com.intellij.tasks.config.TaskRepositoriesConfigurable" displayName="Servers" id="tasks.servers"/>
-        </projectConfigurable>
-
-        <tasks.repositoryType implementation="com.busybusy.intellij.tasks.taiga.TaigaRepositoryType"/>
+        <tasks.repositoryType implementation="com.busybusy.intellij.taiga.TaigaRepositoryType"/>
     </extensions>
 
 </idea-plugin>

@@ -1,4 +1,4 @@
-package com.busybusy.intellij.tasks.taiga;
+package com.busybusy.intellij.taiga;
 
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -7,9 +7,7 @@ import com.google.gson.JsonParser;
 import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.tasks.Task;
-import com.intellij.tasks.TaskRepositoryType;
 import com.intellij.tasks.generic.TemplateVariable;
-import com.intellij.tasks.impl.BaseRepository;
 import com.intellij.tasks.impl.BaseRepositoryImpl;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -61,7 +59,7 @@ public class TaigaRepository extends BaseRepositoryImpl {
     }
 
     @SuppressWarnings("UnusedDeclaration")
-    public TaigaRepository(TaskRepositoryType type) {
+    public TaigaRepository(TaigaRepositoryType type) {
         super(type);
         setUseHttpAuthentication(false);
         setUrl("https://api.taiga.io/api/v1");
@@ -81,7 +79,7 @@ public class TaigaRepository extends BaseRepositoryImpl {
     @NotNull
     @Override
     @SuppressWarnings("CloneDoesntCallSuperClone")
-    public BaseRepository clone() {
+    public TaigaRepository clone() {
         return new TaigaRepository(this);
     }
 
