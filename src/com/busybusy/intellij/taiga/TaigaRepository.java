@@ -1,5 +1,7 @@
 package com.busybusy.intellij.taiga;
 
+import com.busybusy.intellij.taiga.models.TaigaProject;
+import com.busybusy.intellij.taiga.models.TaigaTaskStatus;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -14,13 +16,19 @@ import com.intellij.tasks.impl.BaseRepositoryImpl;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
+import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.lang.StringUtils;
 import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Created by Tjones on 5/21/15.
@@ -28,8 +36,12 @@ import java.util.Set;
 public class TaigaRepository extends BaseRepositoryImpl {
 
     private static final Logger LOG = Logger.getInstance(TaigaRepository.class);
+    private Pattern mPattern = Pattern.compile("(d+)");
 
     private String mAuthKey = null;
+    private String mUserId = null;
+    private List<TaigaProject> mProjects = null;
+    private TaigaProject mSelectedProject = null;
 
     @NonNls
     public static final String SERVER_URL = "serverUrl";
@@ -61,6 +73,13 @@ public class TaigaRepository extends BaseRepositoryImpl {
     };
 
     private static final String kAuthEndpoint = "/auth";
+    private static final String kUserMeEndpoint = "/users/me";
+    private static final String kProjectListEndpoint = "/projects?member=";
+    private static final String kTaskListEndpoint = "/tasks?project=";
+    private static final String kTaskPatchEndpoint = "/tasks/";
+    private static final String kTaskStatusEndpoint = "/task-statuses?project=";
+    private static final String kAssigendToArg = "&assigned_to=";
+
 
     @SuppressWarnings("UnusedDeclaration")
     public TaigaRepository() {
@@ -77,6 +96,10 @@ public class TaigaRepository extends BaseRepositoryImpl {
     @SuppressWarnings("UnusedDeclaration")
     public TaigaRepository(TaigaRepository other) {
         super(other);
+        mAuthKey = other.mAuthKey;
+        mUserId = other.mUserId;
+        mProjects = other.mProjects;
+        mSelectedProject = other.mSelectedProject;
     }
 
     @Nullable
@@ -85,15 +108,32 @@ public class TaigaRepository extends BaseRepositoryImpl {
         return null;
     }
 
-    @NotNull
-    @Override
-    public Set<CustomTaskState> getAvailableTaskStates(@NotNull Task task) throws Exception {
-        return super.getAvailableTaskStates(task);
-    }
-
     @Override
     public Task[] getIssues(@Nullable String query, int offset, int limit, boolean withClosed, @NotNull ProgressIndicator cancelled) throws Exception {
-        return super.getIssues(query, offset, limit, withClosed, cancelled);
+        if(mSelectedProject.getProjectId().equals("-1"))
+        {
+            return null;
+        }
+        List<TaigaTask> result = new ArrayList<TaigaTask>();
+        JsonArray tasks = executeMethod(new GetMethod(getUrl() + kTaskListEndpoint + mSelectedProject.getProjectId()));
+        for (int i = 0; i < tasks.size(); i++) {
+            JsonObject current = tasks.get(i).getAsJsonObject();
+            com.busybusy.intellij.taiga.models.TaigaTask raw = new com.busybusy.intellij.taiga.models.TaigaTask();
+
+            raw.setStatus(current.get("status").getAsJsonPrimitive().getAsString())
+                    .setRef(current.get("ref").getAsJsonPrimitive().getAsString())
+                    .setCreatedAt(current.get("created_date").getAsJsonPrimitive().getAsString())
+                    .setUpdatedAt(current.get("modified_date").getAsJsonPrimitive().getAsString())
+                    .setDescription(current.get("description").getAsJsonPrimitive().getAsString())
+                    .setSubject(current.get("subject").getAsJsonPrimitive().getAsString())
+                    .setProjectId(current.get("project").getAsJsonPrimitive().getAsString())
+                    .setTaskId(current.get("id").getAsJsonPrimitive().getAsString());
+
+            TaigaTask mapped = new TaigaTask(this, raw);
+            result.add(mapped);
+        }
+        Task[] primArray = new Task[result.size()];
+        return result.toArray(primArray);
     }
 
     @NotNull
@@ -117,6 +157,40 @@ public class TaigaRepository extends BaseRepositoryImpl {
                 //Jetbrains left this method blank in their generic task repo as well. Just let it time out?
             }
         };
+    }
+
+    @Nullable
+    @Override
+    public String extractId(@NotNull String taskName) {
+        Matcher matcher = mPattern.matcher(taskName);
+        return matcher.find() ? matcher.group(1) : null;
+    }
+
+    @NotNull
+    @Override
+    public Set<CustomTaskState> getAvailableTaskStates(@NotNull Task task) throws Exception {
+        Set<CustomTaskState> result = new HashSet<CustomTaskState>();
+        if(mSelectedProject != null) {
+            for (TaigaTaskStatus status : mSelectedProject.getStatusList())
+            {
+                result.add(new CustomTaskState(status.getTaigaId(), status.getName()));
+            }
+        }
+        return result;
+    }
+
+    @Override
+    public void setTaskState(@NotNull Task task, @NotNull CustomTaskState state) throws Exception {
+        ((TaigaTask) task).mTask.setStatus(state.getId());
+        NameValuePair[] data = {
+                new NameValuePair("status", state.getId())
+        };
+        executeMethod(getPatchMethod(getUrl() + kTaskPatchEndpoint + ((TaigaTask) task).mTask.getTaskId(), data));
+    }
+
+    @Override
+    protected int getFeatures() {
+        return NATIVE_SEARCH | STATE_UPDATING;
     }
 
     private void doTest() throws Exception {
@@ -180,6 +254,7 @@ public class TaigaRepository extends BaseRepositoryImpl {
         if (mAuthKey != null) {
             method.addRequestHeader("Content-type", "application/json");
             method.addRequestHeader("Authorization", "Bearer " + mAuthKey);
+            method.addRequestHeader("x-disable-pagination", "True");
         } else {
             method.addRequestHeader("Content-type", "application/x-www-form-urlencoded");
         }
@@ -223,6 +298,19 @@ public class TaigaRepository extends BaseRepositoryImpl {
         return postMethod;
     }
 
+    private HttpMethod getPatchMethod(String url, NameValuePair[] data)
+    {
+        PostMethod patchMethod = new PostMethod(url){
+            @Override
+            public String getName() {
+                return "PATCH";
+            }
+        };
+
+        patchMethod.setRequestBody(data);
+        return patchMethod;
+    }
+
     private void setAuthKey(JsonObject body) throws Exception {
         if (body.has("auth_token")) {
             mAuthKey = body.get("auth_token").getAsJsonPrimitive().getAsString();
@@ -230,4 +318,74 @@ public class TaigaRepository extends BaseRepositoryImpl {
             throw new Exception("auth_token missing from server response");
         }
     }
+
+    private void ensureUserId() throws Exception {
+        if (mUserId == null || mUserId.isEmpty()) {
+            JsonArray result = executeMethod(new GetMethod(getUrl() + kUserMeEndpoint));
+            mUserId = result.get(0).getAsJsonObject().get("id").getAsJsonPrimitive().getAsString();
+        }
+    }
+
+    public List<TaigaProject> getProjectList() throws Exception {
+        ensureUserId();
+        if(mProjects == null || mProjects.isEmpty()) {
+            JsonArray query = executeMethod(new GetMethod(getUrl() + kProjectListEndpoint + mUserId));
+            List<TaigaProject> result = new ArrayList<TaigaProject>();
+            for (int i = 0; i < query.size(); i++) {
+                TaigaProject project = new TaigaProject();
+                project.setProjectId(query.get(i).getAsJsonObject().get("id").getAsJsonPrimitive().getAsString());
+                project.setProjectTitle(query.get(i).getAsJsonObject().get("name").getAsJsonPrimitive().getAsString());
+                project.setSlug(query.get(i).getAsJsonObject().get("slug").getAsJsonPrimitive().getAsString());
+                project.setStatusList(getStatusList(project.getProjectId()));
+                result.add(project);
+            }
+
+            mProjects = result;
+        }
+        return mProjects;
+    }
+
+    public List<TaigaTaskStatus> getStatusList(String projectId) throws Exception
+    {
+        JsonArray query = executeMethod(new GetMethod(getUrl() + kTaskStatusEndpoint + projectId));
+        List<TaigaTaskStatus> result = new ArrayList<TaigaTaskStatus>();
+        for (int i = 0; i < query.size(); i++)
+        {
+            TaigaTaskStatus status = new TaigaTaskStatus();
+            status.setTaigaId(query.get(i).getAsJsonObject().get("id").getAsJsonPrimitive().getAsString())
+                    .setName(query.get(i).getAsJsonObject().get("name").getAsJsonPrimitive().getAsString())
+                    .setSlug(query.get(i).getAsJsonObject().get("slug").getAsJsonPrimitive().getAsString())
+                    .setClosed(query.get(i).getAsJsonObject().get("is_closed").getAsJsonPrimitive().getAsBoolean());
+            result.add(status);
+        }
+
+        return result;
+    }
+
+    public TaigaProject getSelectedProject() {
+        return mSelectedProject;
+    }
+
+    public void setSelectedProject(TaigaProject mSelectedProject) {
+        this.mSelectedProject = mSelectedProject;
+    }
+
+    public static final TaigaProject UNSPECIFIED_PROJECT = new TaigaProject() {
+        @Override
+        public String getProjectTitle() {
+            return "-- Select A Project --";
+        }
+
+        @Override
+        public String getProjectId() {
+            return "-1";
+        }
+
+        @Override
+        public String toString() {
+            return getProjectTitle();
+        }
+    };
+
+
 }
