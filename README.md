@@ -1,0 +1,1 @@
+### Taiga Task Repository Plugin for jetbrains IDE platform. ###
