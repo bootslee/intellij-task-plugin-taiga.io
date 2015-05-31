@@ -12,39 +12,46 @@ import javax.swing.*;
 /**
  * Created by Tjones on 5/22/15.
  */
-public class TaigaRepositoryType extends BaseRepositoryType<TaigaRepository> {
+public class TaigaRepositoryType extends BaseRepositoryType<TaigaRepository>
+{
 
-    public TaigaRepositoryType() {
-    }
+	public TaigaRepositoryType()
+	{
+	}
 
-    @NotNull
-    @Override
-    public String getName() {
-        return "Taiga.io";
-    }
+	@NotNull
+	@Override
+	public String getName()
+	{
+		return "Taiga.io";
+	}
 
-    @NotNull
-    @Override
-    public Icon getIcon() {
-        return IconLoader.getIcon("/resources/taiga.png");
-    }
+	@NotNull
+	@Override
+	public Icon getIcon()
+	{
+		return IconLoader.getIcon("/resources/taiga.png");
+	}
 
-    @NotNull
-    @Override
-    public TaigaRepository createRepository() {
-        return new TaigaRepository(this);
-    }
+	@NotNull
+	@Override
+	public TaigaRepository createRepository()
+	{
+		return new TaigaRepository(this);
+	}
 
-    @Override
-    public Class<TaigaRepository> getRepositoryClass() {
-        return TaigaRepository.class;
-    }
+	@Override
+	public Class<TaigaRepository> getRepositoryClass()
+	{
+		return TaigaRepository.class;
+	}
 
-    @NotNull
-    @Override
-    public TaskRepositoryEditor createEditor(TaigaRepository repository, Project project, Consumer<TaigaRepository> changeListener) {
-        return new TaigaRepositoryEditor(project, repository, changeListener);
-    }
+	@NotNull
+	@Override
+	public TaskRepositoryEditor createEditor(TaigaRepository repository, Project project, Consumer<TaigaRepository> changeListener)
+	{
+		return new TaigaRepositoryEditor(project, repository, changeListener);
+	}
 
 
 }
