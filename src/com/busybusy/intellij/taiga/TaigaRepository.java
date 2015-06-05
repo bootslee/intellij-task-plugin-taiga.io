@@ -6,12 +6,10 @@ import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
-import com.intellij.openapi.diagnostic.Logger;
 import com.intellij.openapi.progress.ProgressIndicator;
 import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.tasks.CustomTaskState;
 import com.intellij.tasks.Task;
-import com.intellij.tasks.generic.TemplateVariable;
 import com.intellij.tasks.impl.BaseRepositoryImpl;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
@@ -20,7 +18,6 @@ import org.apache.commons.httpclient.methods.GetMethod;
 import org.apache.commons.httpclient.methods.PostMethod;
 import org.apache.commons.httpclient.methods.StringRequestEntity;
 import org.apache.commons.lang.StringUtils;
-import org.jetbrains.annotations.NonNls;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -36,49 +33,12 @@ import java.util.regex.Pattern;
  */
 public class TaigaRepository extends BaseRepositoryImpl
 {
-
-	private static final Logger LOG = Logger.getInstance(TaigaRepository.class);
 	private Pattern mPattern = Pattern.compile("(d+)");
 
 	private String mAuthKey = null;
 	private String mUserId = null;
 	private List<TaigaProject> mProjects = null;
 	private TaigaProject mSelectedProject = null;
-
-	@NonNls
-	public static final String SERVER_URL = "serverUrl";
-	@NonNls
-	public static final String USERNAME = "username";
-	@NonNls
-	public static final String PASSWORD = "password";
-
-	private final TemplateVariable.FactoryVariable myServerTemplateVariable = new TemplateVariable.FactoryVariable(SERVER_URL)
-	{
-		@NotNull
-		@Override
-		public String getValue()
-		{
-			return TaigaRepository.this.getUrl();
-		}
-	};
-	private final TemplateVariable.FactoryVariable myUserNameTemplateVariable = new TemplateVariable.FactoryVariable(USERNAME)
-	{
-		@NotNull
-		@Override
-		public String getValue()
-		{
-			return TaigaRepository.this.getUsername();
-		}
-	};
-	private final TemplateVariable.FactoryVariable myPasswordTemplateVariable = new TemplateVariable.FactoryVariable(PASSWORD, true)
-	{
-		@NotNull
-		@Override
-		public String getValue()
-		{
-			return TaigaRepository.this.getPassword();
-		}
-	};
 
 	private static final String kAuthEndpoint = "/auth";
 	private static final String kUserMeEndpoint = "/users/me";
@@ -92,7 +52,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 	@SuppressWarnings("UnusedDeclaration")
 	public TaigaRepository()
 	{
-
+		super();
 	}
 
 	@SuppressWarnings("UnusedDeclaration")
@@ -248,13 +208,13 @@ public class TaigaRepository extends BaseRepositoryImpl
 		if (!super.isConfigured()) {
 			result = false;
 		}
-		if (result && StringUtil.isEmpty(myServerTemplateVariable.getValue())) {
+		if (result && StringUtil.isEmpty(this.getUrl())) {
 			result = false;
 		}
-		if (result && StringUtil.isEmpty(myUserNameTemplateVariable.getValue())) {
+		if (result && StringUtil.isEmpty(this.getUsername())) {
 			result = false;
 		}
-		if (result && StringUtil.isEmpty(myPasswordTemplateVariable.getValue())) {
+		if (result && StringUtil.isEmpty(this.getPassword())) {
 			result = false;
 		}
 		return result;
@@ -264,16 +224,16 @@ public class TaigaRepository extends BaseRepositoryImpl
 	{
 		String result = "";
 		int errors = 0;
-		if (StringUtil.isEmpty(myServerTemplateVariable.getValue())) {
+		if (StringUtil.isEmpty(getUrl())) {
 			result += "Server";
 			errors++;
 		}
-		if (StringUtil.isEmpty(myUserNameTemplateVariable.getValue())) {
+		if (StringUtil.isEmpty(getUsername())) {
 			result += !StringUtils.isEmpty(result) ? " & " : "";
 			result += "Username";
 			errors++;
 		}
-		if (StringUtil.isEmpty(myPasswordTemplateVariable.getValue())) {
+		if (StringUtil.isEmpty(getPassword())) {
 			result += !StringUtils.isEmpty(result) ? " & " : "";
 			result += "Password";
 			errors++;
