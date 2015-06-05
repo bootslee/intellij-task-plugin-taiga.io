@@ -1,7 +1,9 @@
 package com.busybusy.intellij.taiga.models;
 
+import com.intellij.util.xmlb.annotations.AbstractCollection;
 import com.intellij.util.xmlb.annotations.Tag;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -13,7 +15,7 @@ public class TaigaProject
 	private String mProjectId;
 	private String mProjectTitle;
 	private String mSlug;
-	private List<TaigaTaskStatus> mStatusList;
+	private List<TaigaTaskStatus> mStatusList = new ArrayList<>();
 
 	public TaigaProject()
 	{
@@ -49,6 +51,7 @@ public class TaigaProject
 		this.mSlug = slug;
 	}
 
+	@AbstractCollection(surroundWithTag = false, elementTag = "TaigaTaskStatus")
 	public List<TaigaTaskStatus> getStatusList()
 	{
 		return mStatusList;
@@ -58,6 +61,19 @@ public class TaigaProject
 	{
 		mStatusList = statusList;
 		return this;
+	}
+
+	public void addTaigaTaskStatus(TaigaTaskStatus status)
+	{
+		if (!mStatusList.contains(status))
+		{
+			mStatusList.add(status);
+		}
+	}
+
+	public void removeTaigaTaskStatus(TaigaTaskStatus status)
+	{
+		mStatusList.remove(status);
 	}
 
 	@Override

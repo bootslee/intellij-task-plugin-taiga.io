@@ -1,8 +1,11 @@
 package com.busybusy.intellij.taiga.models;
 
+import com.intellij.util.xmlb.annotations.Tag;
+
 /**
  * Created by Tjones on 5/27/15.
  */
+@Tag("TaigaTaskStatus")
 public class TaigaTaskStatus
 {
 	private String mTaigaId;
@@ -55,5 +58,33 @@ public class TaigaTaskStatus
 		return this;
 	}
 
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
 
+		TaigaTaskStatus that = (TaigaTaskStatus) o;
+
+		if (mClosed != that.mClosed)
+		{
+			return false;
+		}
+		if (mTaigaId != null ? !mTaigaId.equals(that.mTaigaId) : that.mTaigaId != null)
+		{
+			return false;
+		}
+		if (mName != null ? !mName.equals(that.mName) : that.mName != null)
+		{
+			return false;
+		}
+		return !(mSlug != null ? !mSlug.equals(that.mSlug) : that.mSlug != null);
+
+	}
 }

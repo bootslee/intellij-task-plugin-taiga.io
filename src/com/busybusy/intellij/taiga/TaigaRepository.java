@@ -1,6 +1,7 @@
 package com.busybusy.intellij.taiga;
 
 import com.busybusy.intellij.taiga.models.TaigaProject;
+import com.busybusy.intellij.taiga.models.TaigaTaskBean;
 import com.busybusy.intellij.taiga.models.TaigaTaskStatus;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonElement;
@@ -11,6 +12,7 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.tasks.CustomTaskState;
 import com.intellij.tasks.Task;
 import com.intellij.tasks.impl.BaseRepositoryImpl;
+import com.intellij.util.xmlb.annotations.Tag;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
@@ -31,6 +33,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Tjones on 5/21/15.
  */
+@Tag("Taiga.io")
 public class TaigaRepository extends BaseRepositoryImpl
 {
 	private Pattern mPattern = Pattern.compile("(d+)");
@@ -252,7 +255,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 		JsonArray tasks = executeMethod(new GetMethod(getUrl() + kTaskListEndpoint + mSelectedProject.getProjectId()));
 		for (int i = 0; i < tasks.size(); i++) {
 			JsonObject current = tasks.get(i).getAsJsonObject();
-			com.busybusy.intellij.taiga.models.TaigaTask raw = new com.busybusy.intellij.taiga.models.TaigaTask();
+			TaigaTaskBean raw = new TaigaTaskBean();
 
 			raw.setStatus(current.get("status").getAsJsonPrimitive().getAsString())
 			   .setRef(current.get("ref").getAsJsonPrimitive().getAsString())

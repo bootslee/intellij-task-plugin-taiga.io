@@ -1,9 +1,12 @@
 package com.busybusy.intellij.taiga.models;
 
+import com.intellij.util.xmlb.annotations.Tag;
+
 /**
  * Created by Tjones on 5/26/15.
  */
-public class TaigaTask
+@Tag("TaigaTaskBean")
+public class TaigaTaskBean
 {
 
 	private String mTaskId;
@@ -15,7 +18,7 @@ public class TaigaTask
 	private String mCreatedAt;
 	private String mStatus;
 
-	public TaigaTask()
+	public TaigaTaskBean()
 	{
 	}
 
@@ -24,7 +27,7 @@ public class TaigaTask
 		return mTaskId;
 	}
 
-	public TaigaTask setTaskId(String taskId)
+	public TaigaTaskBean setTaskId(String taskId)
 	{
 		this.mTaskId = taskId;
 		return this;
@@ -35,7 +38,7 @@ public class TaigaTask
 		return mRef;
 	}
 
-	public TaigaTask setRef(String ref)
+	public TaigaTaskBean setRef(String ref)
 	{
 		this.mRef = ref;
 		return this;
@@ -46,7 +49,7 @@ public class TaigaTask
 		return mProjectId;
 	}
 
-	public TaigaTask setProjectId(String projectId)
+	public TaigaTaskBean setProjectId(String projectId)
 	{
 		this.mProjectId = projectId;
 		return this;
@@ -57,7 +60,7 @@ public class TaigaTask
 		return mSubject;
 	}
 
-	public TaigaTask setSubject(String subject)
+	public TaigaTaskBean setSubject(String subject)
 	{
 		this.mSubject = subject;
 		return this;
@@ -68,7 +71,7 @@ public class TaigaTask
 		return mDescription;
 	}
 
-	public TaigaTask setDescription(String description)
+	public TaigaTaskBean setDescription(String description)
 	{
 		this.mDescription = description;
 		return this;
@@ -79,7 +82,7 @@ public class TaigaTask
 		return mUpdatedAt;
 	}
 
-	public TaigaTask setUpdatedAt(String updatedAt)
+	public TaigaTaskBean setUpdatedAt(String updatedAt)
 	{
 		this.mUpdatedAt = updatedAt;
 		return this;
@@ -90,7 +93,7 @@ public class TaigaTask
 		return mCreatedAt;
 	}
 
-	public TaigaTask setCreatedAt(String createdAt)
+	public TaigaTaskBean setCreatedAt(String createdAt)
 	{
 		this.mCreatedAt = createdAt;
 		return this;
@@ -101,7 +104,7 @@ public class TaigaTask
 		return mStatus;
 	}
 
-	public TaigaTask setStatus(String status)
+	public TaigaTaskBean setStatus(String status)
 	{
 		mStatus = status;
 		return this;

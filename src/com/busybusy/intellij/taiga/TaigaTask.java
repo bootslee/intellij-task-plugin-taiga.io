@@ -1,12 +1,14 @@
 package com.busybusy.intellij.taiga;
 
 import com.busybusy.intellij.taiga.models.TaigaProject;
+import com.busybusy.intellij.taiga.models.TaigaTaskBean;
 import com.busybusy.intellij.taiga.models.TaigaTaskStatus;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.tasks.Comment;
 import com.intellij.tasks.Task;
 import com.intellij.tasks.TaskRepository;
 import com.intellij.tasks.TaskType;
+import com.intellij.util.xmlb.annotations.Tag;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -19,15 +21,16 @@ import java.util.List;
 /**
  * Created by Tjones on 5/22/15.
  */
+@Tag("TaigaTask")
 public class TaigaTask extends Task
 {
 	TaigaProject mProject;
 	TaigaRepository mRepository;
-	com.busybusy.intellij.taiga.models.TaigaTask mTask;
+	TaigaTaskBean mTask;
 	public static final String kTaskRefUrl = "https://tree.taiga.io/project/";
 	public static final String kTaskRef = "/task/";
 
-	public TaigaTask(@NotNull TaigaRepository repository, @NotNull com.busybusy.intellij.taiga.models.TaigaTask task) throws Exception
+	public TaigaTask(@NotNull TaigaRepository repository, @NotNull TaigaTaskBean task) throws Exception
 	{
 		mRepository = repository;
 		mTask = task;
