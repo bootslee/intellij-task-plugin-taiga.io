@@ -12,7 +12,9 @@ import com.intellij.openapi.util.text.StringUtil;
 import com.intellij.tasks.CustomTaskState;
 import com.intellij.tasks.Task;
 import com.intellij.tasks.impl.BaseRepositoryImpl;
+import com.intellij.util.xmlb.annotations.AbstractCollection;
 import com.intellij.util.xmlb.annotations.Tag;
+import com.intellij.util.xmlb.annotations.Transient;
 import org.apache.commons.httpclient.HttpMethod;
 import org.apache.commons.httpclient.HttpStatus;
 import org.apache.commons.httpclient.NameValuePair;
@@ -40,7 +42,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 
 	private String mAuthKey = null;
 	private String mUserId = null;
-	private List<TaigaProject> mProjects = null;
+	private List<TaigaProject> mProjects = new ArrayList<>();
 	private TaigaProject mSelectedProject = null;
 
 	private static final String kAuthEndpoint = "/auth";
@@ -359,6 +361,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 		}
 	}
 
+	@Transient
 	public List<TaigaProject> getProjectList() throws Exception
 	{
 		ensureUserId();
@@ -379,6 +382,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 		return mProjects;
 	}
 
+	@Transient
 	public List<TaigaTaskStatus> getStatusList(String projectId) throws Exception
 	{
 		JsonArray query = executeMethod(new GetMethod(getUrl() + kTaskStatusEndpoint + projectId));
@@ -403,6 +407,50 @@ public class TaigaRepository extends BaseRepositoryImpl
 	public void setSelectedProject(TaigaProject mSelectedProject)
 	{
 		this.mSelectedProject = mSelectedProject;
+	}
+
+	public String getmAuthKey()
+	{
+		return mAuthKey;
+	}
+
+	public void setmAuthKey(String mAuthKey)
+	{
+		this.mAuthKey = mAuthKey;
+	}
+
+	public String getmUserId()
+	{
+		return mUserId;
+	}
+
+	public void setmUserId(String mUserId)
+	{
+		this.mUserId = mUserId;
+	}
+
+	@AbstractCollection(surroundWithTag = false, elementTag = "TaigaProject", elementTypes = TaigaProject.class)
+	public List<TaigaProject> getProjects()
+	{
+		return mProjects;
+	}
+
+	public void setProjects(List<TaigaProject> projects)
+	{
+		this.mProjects = projects;
+	}
+
+	public void addTaigaProject(TaigaProject project)
+	{
+		if (!mProjects.contains(project))
+		{
+			mProjects.add(project);
+		}
+	}
+
+	public void removeTaigaProject(TaigaProject project)
+	{
+		mProjects.remove(project);
 	}
 
 	public static final TaigaProject UNSPECIFIED_PROJECT = new TaigaProject()

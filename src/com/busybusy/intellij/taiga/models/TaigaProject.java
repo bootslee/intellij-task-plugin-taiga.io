@@ -81,4 +81,30 @@ public class TaigaProject
 	{
 		return mProjectTitle != null ? mProjectTitle : super.toString();
 	}
+
+	@Override
+	public boolean equals(Object o)
+	{
+		if (this == o)
+		{
+			return true;
+		}
+		if (o == null || getClass() != o.getClass())
+		{
+			return false;
+		}
+
+		TaigaProject that = (TaigaProject) o;
+
+		if (mProjectId != null ? !mProjectId.equals(that.mProjectId) : that.mProjectId != null)
+		{
+			return false;
+		}
+		if (mProjectTitle != null ? !mProjectTitle.equals(that.mProjectTitle) : that.mProjectTitle != null)
+		{
+			return false;
+		}
+		return !(mSlug != null ? !mSlug.equals(that.mSlug) : that.mSlug != null);
+
+	}
 }
