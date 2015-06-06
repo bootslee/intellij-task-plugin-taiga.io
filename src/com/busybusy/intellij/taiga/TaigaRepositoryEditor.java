@@ -27,12 +27,16 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 
 	private JBLabel mProjectLabel;
 	private ComboBox mProjectBox;
+	private JCheckBox mFilterByUserBox;
 
-	public TaigaRepositoryEditor(Project project, TaigaRepository repository, Consumer<TaigaRepository> changeListener)
+	public TaigaRepositoryEditor(final Project project, final TaigaRepository repository, Consumer<TaigaRepository> changeListener)
 	{
 		super(project, repository, changeListener);
 
+		mFilterByUserBox.setSelected(repository.isFilterByUser());
+
 		installListener(mProjectBox);
+		installListener(mFilterByUserBox);
 
 		UIUtil.invokeLaterIfNeeded(new Runnable()
 		{
@@ -46,8 +50,8 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 
 	private void initialize()
 	{
-		final TaigaProject currentProject = myRepository.getSelectedProject();
-		if (currentProject != null && myRepository.isConfigured()) {
+		if (myRepository.isConfigured())
+		{
 			new FetchProjectsTask().queue();
 		}
 	}
@@ -57,11 +61,15 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 	@Override
 	protected JComponent createCustomPanel()
 	{
-		mProjectLabel = new JBLabel("Project:", SwingConstants.RIGHT);
 		mProjectBox = new ComboBox(300);
-		mProjectBox.setRenderer(new TaskUiUtil.SimpleComboBoxRenderer("Set URL, username, and password first"));
+		mProjectBox.setRenderer(new TaskUiUtil.SimpleComboBoxRenderer("Set URL, username, and password"));
+		mProjectLabel = new JBLabel("Project:", SwingConstants.RIGHT);
 		mProjectLabel.setLabelFor(mProjectBox);
-		return new FormBuilder().addLabeledComponent(mProjectLabel, mProjectBox).getPanel();
+		mFilterByUserBox = new JCheckBox("Only show tasks assigned to me");
+
+		return new FormBuilder().addLabeledComponent(mProjectLabel, mProjectBox)
+		                        .addComponentToRightColumn(mFilterByUserBox)
+		                        .getPanel();
 	}
 
 	@Override
@@ -83,6 +91,7 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 	public void apply()
 	{
 		super.apply();
+		myRepository.setFilterByUser(mFilterByUserBox.isSelected());
 		myRepository.setSelectedProject((TaigaProject) mProjectBox.getSelectedItem());
 		myTestButton.setEnabled(myRepository.isConfigured());
 	}

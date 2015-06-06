@@ -1,7 +1,7 @@
 package com.busybusy.intellij.taiga;
 
 import com.busybusy.intellij.taiga.models.TaigaProject;
-import com.busybusy.intellij.taiga.models.TaigaTaskBean;
+import com.busybusy.intellij.taiga.models.TaigaRemoteTask;
 import com.busybusy.intellij.taiga.models.TaigaTaskStatus;
 import com.intellij.openapi.util.IconLoader;
 import com.intellij.tasks.Comment;
@@ -22,15 +22,15 @@ import java.util.List;
  * Created by Tjones on 5/22/15.
  */
 @Tag("TaigaTask")
-public class TaigaTask extends Task
+public class TaigaTask extends Task implements Comparable<TaigaTask>
 {
 	TaigaProject mProject;
 	TaigaRepository mRepository;
-	TaigaTaskBean mTask;
+	TaigaRemoteTask mTask;
 	public static final String kTaskRefUrl = "https://tree.taiga.io/project/";
 	public static final String kTaskRef = "/task/";
 
-	public TaigaTask(@NotNull TaigaRepository repository, @NotNull TaigaTaskBean task) throws Exception
+	public TaigaTask(@NotNull TaigaRepository repository, @NotNull TaigaRemoteTask task) throws Exception
 	{
 		mRepository = repository;
 		mTask = task;
@@ -156,5 +156,25 @@ public class TaigaTask extends Task
 			e.printStackTrace();
 		}
 		return null;
+	}
+
+	@Override
+	public int compareTo(TaigaTask o)
+	{
+		int me = Integer.parseInt(this.mTask.getRef());
+		int them = Integer.parseInt(o.mTask.getRef());
+
+		if (me == them)
+		{
+			return 0;
+		}
+		else if (me > them)
+		{
+			return 1;
+		}
+		else
+		{
+			return -1;
+		}
 	}
 }

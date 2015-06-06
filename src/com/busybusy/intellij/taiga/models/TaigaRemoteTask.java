@@ -1,12 +1,13 @@
 package com.busybusy.intellij.taiga.models;
 
 import com.intellij.util.xmlb.annotations.Tag;
+import org.apache.http.util.TextUtils;
 
 /**
  * Created by Tjones on 5/26/15.
  */
-@Tag("TaigaTaskBean")
-public class TaigaTaskBean
+@Tag("TaigaRemoteTask")
+public class TaigaRemoteTask
 {
 
 	private String mTaskId;
@@ -17,8 +18,9 @@ public class TaigaTaskBean
 	private String mUpdatedAt;
 	private String mCreatedAt;
 	private String mStatus;
+	private String mAssignedTo;
 
-	public TaigaTaskBean()
+	public TaigaRemoteTask()
 	{
 	}
 
@@ -27,7 +29,7 @@ public class TaigaTaskBean
 		return mTaskId;
 	}
 
-	public TaigaTaskBean setTaskId(String taskId)
+	public TaigaRemoteTask setTaskId(String taskId)
 	{
 		this.mTaskId = taskId;
 		return this;
@@ -38,7 +40,7 @@ public class TaigaTaskBean
 		return mRef;
 	}
 
-	public TaigaTaskBean setRef(String ref)
+	public TaigaRemoteTask setRef(String ref)
 	{
 		this.mRef = ref;
 		return this;
@@ -49,7 +51,7 @@ public class TaigaTaskBean
 		return mProjectId;
 	}
 
-	public TaigaTaskBean setProjectId(String projectId)
+	public TaigaRemoteTask setProjectId(String projectId)
 	{
 		this.mProjectId = projectId;
 		return this;
@@ -60,7 +62,7 @@ public class TaigaTaskBean
 		return mSubject;
 	}
 
-	public TaigaTaskBean setSubject(String subject)
+	public TaigaRemoteTask setSubject(String subject)
 	{
 		this.mSubject = subject;
 		return this;
@@ -71,7 +73,7 @@ public class TaigaTaskBean
 		return mDescription;
 	}
 
-	public TaigaTaskBean setDescription(String description)
+	public TaigaRemoteTask setDescription(String description)
 	{
 		this.mDescription = description;
 		return this;
@@ -82,7 +84,7 @@ public class TaigaTaskBean
 		return mUpdatedAt;
 	}
 
-	public TaigaTaskBean setUpdatedAt(String updatedAt)
+	public TaigaRemoteTask setUpdatedAt(String updatedAt)
 	{
 		this.mUpdatedAt = updatedAt;
 		return this;
@@ -93,7 +95,7 @@ public class TaigaTaskBean
 		return mCreatedAt;
 	}
 
-	public TaigaTaskBean setCreatedAt(String createdAt)
+	public TaigaRemoteTask setCreatedAt(String createdAt)
 	{
 		this.mCreatedAt = createdAt;
 		return this;
@@ -104,9 +106,30 @@ public class TaigaTaskBean
 		return mStatus;
 	}
 
-	public TaigaTaskBean setStatus(String status)
+	public TaigaRemoteTask setStatus(String status)
 	{
 		mStatus = status;
 		return this;
+	}
+
+	public String getAssignedTo()
+	{
+		return mAssignedTo;
+	}
+
+	public TaigaRemoteTask setAssignedTo(String assignedTo)
+	{
+		mAssignedTo = assignedTo;
+		return this;
+	}
+
+	public boolean isValid()
+	{
+		return !(TextUtils.isEmpty(mTaskId) ||
+				         TextUtils.isEmpty(mRef) ||
+				         TextUtils.isEmpty(mProjectId) ||
+				         TextUtils.isEmpty(mUpdatedAt) ||
+				         TextUtils.isEmpty(mCreatedAt) ||
+				         TextUtils.isEmpty(mStatus));
 	}
 }
