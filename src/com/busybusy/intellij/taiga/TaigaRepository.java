@@ -40,7 +40,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 
 	private String mAuthKey = null;
 	private String mUserId = null;
-	private List<TaigaProject> mProjects = new ArrayList<>();
+	private List<TaigaProject> mProjects = new ArrayList<TaigaProject>();
 	private TaigaProject mSelectedProject = null;
 	private boolean mFilterByUser;
 
@@ -131,7 +131,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 	@Override
 	public Set<CustomTaskState> getAvailableTaskStates(@NotNull Task task) throws Exception
 	{
-		Set<CustomTaskState> result = new HashSet<>();
+		Set<CustomTaskState> result = new HashSet<CustomTaskState>();
 		if (mSelectedProject != null)
 		{
 			for (TaigaTaskStatus status : mSelectedProject.getStatusList())
@@ -275,7 +275,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 		{
 			return null;
 		}
-		List<TaigaTask> result = new ArrayList<>();
+		List<TaigaTask> result = new ArrayList<TaigaTask>();
 
 		JsonArray tasks;
 		if (mFilterByUser)
@@ -417,7 +417,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 		if (mProjects == null || mProjects.isEmpty())
 		{
 			JsonArray query = executeMethod(new GetMethod(getUrl() + kProjectListEndpoint + mUserId));
-			List<TaigaProject> result = new ArrayList<>();
+			List<TaigaProject> result = new ArrayList<TaigaProject>();
 			for (int i = 0; i < query.size(); i++)
 			{
 				TaigaProject project = new TaigaProject();
@@ -437,7 +437,7 @@ public class TaigaRepository extends BaseRepositoryImpl
 	public List<TaigaTaskStatus> getStatusList(String projectId) throws Exception
 	{
 		JsonArray query = executeMethod(new GetMethod(getUrl() + kTaskStatusEndpoint + projectId));
-		List<TaigaTaskStatus> result = new ArrayList<>();
+		List<TaigaTaskStatus> result = new ArrayList<TaigaTaskStatus>();
 		for (int i = 0; i < query.size(); i++)
 		{
 			TaigaTaskStatus status = new TaigaTaskStatus();

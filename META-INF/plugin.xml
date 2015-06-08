@@ -1,11 +1,11 @@
 <idea-plugin version = "2">
 	<id>com.busybusy.Taiga.io.Task</id>
 	<name>Taiga.io Tasks</name>
-	<version>1.1.0</version>
+	<version>1.1.1</version>
 	<vendor email = "trevor@busybusy.com" url = "http://www.busybusy.com">busybusy</vendor>
 
 	<description><![CDATA[
-      <p>Enable use of <a href="https://taiga.io">taiga.io</a> as an IntelliJ task server.</p>
+      <p>Enable the use of <a href="https://taiga.io">taiga.io</a> as an IntelliJ task server.</p>
     ]]></description>
 
 	<change-notes><![CDATA[
@@ -13,6 +13,7 @@
       <p>1.0.1 - Fixed issue with server not persisting project reload</p>
       <p>1.0.2 - Switched to using getResponseBodyAsStream rather than string to avoid potential issues on large responses from the server</p>
       <p>1.1.0 - Added the ability to filter tasks shown by those only assigned to you</p>
+      <p>1.1.1 - Switched build JDK to java 1.6 in order to support a wider range of environments</p>
     ]]>
 	</change-notes>
 

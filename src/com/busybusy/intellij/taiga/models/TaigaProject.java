@@ -15,7 +15,7 @@ public class TaigaProject
 	private String mProjectId;
 	private String mProjectTitle;
 	private String mSlug;
-	private List<TaigaTaskStatus> mStatusList = new ArrayList<>();
+	private List<TaigaTaskStatus> mStatusList = new ArrayList<TaigaTaskStatus>();
 
 	public TaigaProject()
 	{
