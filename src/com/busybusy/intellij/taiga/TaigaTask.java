@@ -27,13 +27,15 @@ public class TaigaTask extends Task implements Comparable<TaigaTask>
 	TaigaProject mProject;
 	TaigaRepository mRepository;
 	TaigaRemoteTask mTask;
-	public static final String kTaskRefUrl = "https://tree.taiga.io/project/";
+	String mRepositoryURL;
+	public static final String kTaskRefUrl = "/project/";
 	public static final String kTaskRef = "/task/";
 
 	public TaigaTask(@NotNull TaigaRepository repository, @NotNull TaigaRemoteTask task) throws Exception
 	{
 		mRepository = repository;
 		mTask = task;
+		mRepositoryURL = repository.getUrl();
 
 		for (TaigaProject iter : mRepository.getProjectList()) {
 			if (iter.getProjectId().equals(mTask.getProjectId())) {
@@ -132,7 +134,7 @@ public class TaigaTask extends Task implements Comparable<TaigaTask>
 	@Override
 	public String getIssueUrl()
 	{
-		return kTaskRefUrl + mProject.getSlug() + kTaskRef + mTask.getRef();
+		return mRepositoryURL + kTaskRefUrl + mProject.getSlug() + kTaskRef + mTask.getRef();
 	}
 
 	public static Date parseDateISO8601(String input)
@@ -159,7 +161,7 @@ public class TaigaTask extends Task implements Comparable<TaigaTask>
 	}
 
 	@Override
-	public int compareTo(TaigaTask o)
+	public int compareTo(@NotNull TaigaTask o)
 	{
 		int me = Integer.parseInt(this.mTask.getRef());
 		int them = Integer.parseInt(o.mTask.getRef());
