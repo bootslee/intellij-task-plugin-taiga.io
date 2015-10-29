@@ -20,13 +20,13 @@ import static com.busybusy.intellij.taiga.TaigaRepository.UNSPECIFIED_PROJECT;
 
 /**
  * Created by Tjones on 5/26/15.
- * TODO: add a toggle for filtering tasks that are assigned to you
  */
 public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 {
 
 	private JBLabel mProjectLabel;
 	private ComboBox mProjectBox;
+
 	private JCheckBox mFilterByUserBox;
 
 	public TaigaRepositoryEditor(final Project project, final TaigaRepository repository, Consumer<TaigaRepository> changeListener)

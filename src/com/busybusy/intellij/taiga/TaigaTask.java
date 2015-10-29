@@ -28,7 +28,7 @@ public class TaigaTask extends Task implements Comparable<TaigaTask>
 	TaigaRepository mRepository;
 	TaigaRemoteTask mTask;
 	String mRepositoryURL;
-	public static final String kTaskRefUrl = "/project/";
+	public static final String kProjectRef = "/project/";
 	public static final String kTaskRef = "/task/";
 
 	public TaigaTask(@NotNull TaigaRepository repository, @NotNull TaigaRemoteTask task) throws Exception
@@ -134,9 +134,10 @@ public class TaigaTask extends Task implements Comparable<TaigaTask>
 	@Override
 	public String getIssueUrl()
 	{
-		return mRepositoryURL + kTaskRefUrl + mProject.getSlug() + kTaskRef + mTask.getRef();
+		return mRepositoryURL.replace("/api/v1","") + kProjectRef + mProject.getSlug() + kTaskRef + mTask.getRef();
 	}
 
+	@Nullable
 	public static Date parseDateISO8601(String input)
 	{
 		SimpleDateFormat df = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssz");
