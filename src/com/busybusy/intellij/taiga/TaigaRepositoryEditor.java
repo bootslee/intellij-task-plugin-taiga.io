@@ -16,8 +16,6 @@ import org.jetbrains.annotations.Nullable;
 import javax.swing.*;
 import java.util.List;
 
-import static com.busybusy.intellij.taiga.TaigaRepository.UNSPECIFIED_PROJECT;
-
 /**
  * Created by Tjones on 5/26/15.
  */
@@ -106,7 +104,7 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 		@Override
 		public TaigaProject getExtraItem()
 		{
-			return UNSPECIFIED_PROJECT;
+			return TaigaProject.UNSPECIFIED_PROJECT;
 		}
 
 		@Nullable

@@ -26,9 +26,10 @@ public class TaigaProject
 		return mProjectId;
 	}
 
-	public void setProjectId(String mProjectId)
+	public TaigaProject setProjectId(String mProjectId)
 	{
 		this.mProjectId = mProjectId;
+		return this;
 	}
 
 	public String getProjectTitle()
@@ -36,9 +37,10 @@ public class TaigaProject
 		return mProjectTitle;
 	}
 
-	public void setProjectTitle(String mProjectTitle)
+	public TaigaProject setProjectTitle(String mProjectTitle)
 	{
 		this.mProjectTitle = mProjectTitle;
+		return this;
 	}
 
 	public String getSlug()
@@ -46,9 +48,10 @@ public class TaigaProject
 		return mSlug;
 	}
 
-	public void setSlug(String slug)
+	public TaigaProject setSlug(String slug)
 	{
 		this.mSlug = slug;
+		return this;
 	}
 
 	@AbstractCollection(surroundWithTag = false, elementTag = "TaigaTaskStatus")
@@ -63,17 +66,24 @@ public class TaigaProject
 		return this;
 	}
 
-	public void addTaigaTaskStatus(TaigaTaskStatus status)
+	public TaigaProject addTaigaTaskStatus(TaigaTaskStatus status)
 	{
 		if (!mStatusList.contains(status))
 		{
 			mStatusList.add(status);
 		}
+		return this;
 	}
 
-	public void removeTaigaTaskStatus(TaigaTaskStatus status)
+	public TaigaProject removeTaigaTaskStatus(TaigaTaskStatus status)
 	{
 		mStatusList.remove(status);
+		return this;
+	}
+
+	public boolean isValid()
+	{
+		return !(mProjectId.equals("") || mProjectTitle.equals("") || mSlug.equals(""));
 	}
 
 	@Override
@@ -107,4 +117,25 @@ public class TaigaProject
 		return !(mSlug != null ? !mSlug.equals(that.mSlug) : that.mSlug != null);
 
 	}
+
+	public static final TaigaProject UNSPECIFIED_PROJECT = new TaigaProject()
+	{
+		@Override
+		public String getProjectTitle()
+		{
+			return "-- Select A Project --";
+		}
+
+		@Override
+		public String getProjectId()
+		{
+			return "-1";
+		}
+
+		@Override
+		public String toString()
+		{
+			return getProjectTitle();
+		}
+	};
 }

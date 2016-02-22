@@ -1,5 +1,6 @@
 package com.busybusy.intellij.taiga.models;
 
+import com.google.gson.JsonObject;
 import com.intellij.util.xmlb.annotations.Tag;
 import org.apache.http.util.TextUtils;
 
@@ -22,6 +23,11 @@ public class TaigaRemoteTask
 
 	public TaigaRemoteTask()
 	{
+	}
+
+	public TaigaRemoteTask(JsonObject suspect)
+	{
+		this.deserializeRemoteTask(suspect);
 	}
 
 	public String getTaskId()
@@ -131,5 +137,63 @@ public class TaigaRemoteTask
 				         TextUtils.isEmpty(mUpdatedAt) ||
 				         TextUtils.isEmpty(mCreatedAt) ||
 				         TextUtils.isEmpty(mStatus));
+	}
+
+	private void deserializeRemoteTask(JsonObject current)
+	{
+		if (current.has("status"))
+		{
+			this.setStatus((current.get("status").isJsonPrimitive()) ? current.get("status")
+			                                                                  .getAsJsonPrimitive()
+			                                                                  .getAsString() : "");
+		}
+		if (current.has("ref"))
+		{
+			this.setRef((current.get("ref").isJsonPrimitive()) ? current.get("ref")
+			                                                            .getAsJsonPrimitive()
+			                                                            .getAsString() : "");
+		}
+		if (current.has("created_date"))
+		{
+			this.setCreatedAt((current.get("created_date").isJsonPrimitive()) ? current.get("created_date")
+			                                                                           .getAsJsonPrimitive()
+			                                                                           .getAsString() : "");
+		}
+		if (current.has("modified_date"))
+		{
+			this.setUpdatedAt((current.get("modified_date").isJsonPrimitive()) ? current.get("modified_date")
+			                                                                            .getAsJsonPrimitive()
+			                                                                            .getAsString() : "");
+		}
+		if (current.has("description"))
+		{
+			this.setDescription((current.get("description").isJsonPrimitive()) ? current.get("description")
+			                                                                            .getAsJsonPrimitive()
+			                                                                            .getAsString() : "");
+		}
+		if (current.has("subject"))
+		{
+			this.setSubject((current.get("subject").isJsonPrimitive()) ? current.get("subject")
+			                                                                    .getAsJsonPrimitive()
+			                                                                    .getAsString() : "");
+		}
+		if (current.has("project"))
+		{
+			this.setProjectId((current.get("project").isJsonPrimitive()) ? current.get("project")
+			                                                                      .getAsJsonPrimitive()
+			                                                                      .getAsString() : "");
+		}
+		if (current.has("id"))
+		{
+			this.setTaskId((current.get("id").isJsonPrimitive()) ? current.get("id")
+			                                                              .getAsJsonPrimitive()
+			                                                              .getAsString() : "");
+		}
+		if (current.has("assigned_to"))
+		{
+			this.setAssignedTo((current.get("assigned_to").isJsonPrimitive()) ? current.get("assigned_to")
+			                                                                           .getAsJsonPrimitive()
+			                                                                           .getAsString() : "");
+		}
 	}
 }
