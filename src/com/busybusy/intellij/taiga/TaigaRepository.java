@@ -33,12 +33,10 @@ import java.util.regex.Pattern;
 
 import static com.busybusy.intellij.taiga.utilities.GsonUtilities.getAsStringOr;
 
-/**
- * Created by Tjones on 5/21/15.
- */
 @Tag("Taiga.io")
 class TaigaRepository extends BaseRepositoryImpl
 {
+	private String             mWebUrl          = null;
 	private String             mAuthKey         = null;
 	private String             mUserId          = null;
 	private List<TaigaProject> mProjects        = new ArrayList<TaigaProject>();
@@ -56,7 +54,8 @@ class TaigaRepository extends BaseRepositoryImpl
 	{
 		super(type);
 		setUseHttpAuthentication(false);
-		setUrl("https://api.taiga.io/api/v1");
+		setUrl(ApiConstants.Url.DEFAULT);
+		setWebUrl(ApiConstants.Url.WEBSITE);
 	}
 
 	@SuppressWarnings({"UnusedDeclaration", "WeakerAccess"})
@@ -68,6 +67,7 @@ class TaigaRepository extends BaseRepositoryImpl
 		mProjects = other.mProjects;
 		mSelectedProject = other.mSelectedProject;
 		mFilterByUser = other.mFilterByUser;
+		mWebUrl = other.mWebUrl;
 	}
 
 	@Nullable
@@ -160,6 +160,7 @@ class TaigaRepository extends BaseRepositoryImpl
 				throw new Exception("Unable to get refresh tasks from server");
 			}
 		}
+
 		if (taigaTask == null)
 		{
 			throw new Exception("Task not found");
@@ -313,7 +314,7 @@ class TaigaRepository extends BaseRepositoryImpl
 
 		if (method.getStatusCode() == HttpStatus.SC_UNAUTHORIZED)
 		{
-			JsonObject json = new JsonParser().parse(new InputStreamReader(method.getResponseBodyAsStream()))
+			JsonObject json = new JsonParser().parse(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"))
 			                                  .getAsJsonObject();
 			if (json.has("_error_message") && json.get("_error_message").getAsJsonPrimitive().getAsString()
 			                                      .equals("Invalid token"))
@@ -324,7 +325,7 @@ class TaigaRepository extends BaseRepositoryImpl
 
 		}
 
-		JsonElement json = new JsonParser().parse(new InputStreamReader(method.getResponseBodyAsStream()));
+		JsonElement json = new JsonParser().parse(new InputStreamReader(method.getResponseBodyAsStream(), "UTF-8"));
 
 		JsonArray responseBody;
 
@@ -476,6 +477,18 @@ class TaigaRepository extends BaseRepositoryImpl
 	public void setmUserId(String mUserId)
 	{
 		this.mUserId = mUserId;
+	}
+
+	@SuppressWarnings("WeakerAccess")
+	public String getWebUrl()
+	{
+		return mWebUrl;
+	}
+
+	@SuppressWarnings("WeakerAccess")
+	public void setWebUrl(String mWebUrl)
+	{
+		this.mWebUrl = mWebUrl;
 	}
 
 	@SuppressWarnings("UnusedDeclaration")

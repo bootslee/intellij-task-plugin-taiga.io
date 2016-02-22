@@ -2,6 +2,11 @@ package com.busybusy.intellij.taiga.constants;
 
 public class ApiConstants
 {
+	public interface Url
+	{
+		String DEFAULT = "https://api.taiga.io/api/v1";
+		String WEBSITE = "https://tree.taiga.io";
+	}
 	public interface EndPoint
 	{
 		String AUTH         = "/auth";

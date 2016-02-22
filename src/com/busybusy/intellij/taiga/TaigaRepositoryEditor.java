@@ -22,7 +22,10 @@ import java.util.List;
 public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 {
 
-	private JBLabel mProjectLabel;
+	protected JBLabel    mWebUrlLabel;
+	protected JTextField mWebUrlText;
+
+	private JBLabel  mProjectLabel;
 	private ComboBox mProjectBox;
 
 	private JCheckBox mFilterByUserBox;
@@ -32,7 +35,9 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 		super(project, repository, changeListener);
 
 		mFilterByUserBox.setSelected(repository.isFilterByUser());
+		mWebUrlText.setText(repository.getWebUrl());
 
+		installListener(mWebUrlText);
 		installListener(mProjectBox);
 		installListener(mFilterByUserBox);
 
@@ -59,13 +64,20 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 	@Override
 	protected JComponent createCustomPanel()
 	{
+		mWebUrlText = new JTextField();
+		mWebUrlLabel = new JBLabel("Website URL:", SwingConstants.RIGHT);
+		mWebUrlLabel.setLabelFor(mWebUrlText);
+
 		mProjectBox = new ComboBox(300);
 		mProjectBox.setRenderer(new TaskUiUtil.SimpleComboBoxRenderer("Set URL, username, and password"));
 		mProjectLabel = new JBLabel("Project:", SwingConstants.RIGHT);
 		mProjectLabel.setLabelFor(mProjectBox);
+
 		mFilterByUserBox = new JCheckBox("Only show tasks assigned to me");
 
-		return new FormBuilder().addLabeledComponent(mProjectLabel, mProjectBox)
+		return new FormBuilder().setAlignLabelOnRight(true)
+		                        .addLabeledComponent(mWebUrlLabel, mWebUrlText)
+		                        .addLabeledComponent(mProjectLabel, mProjectBox)
 		                        .addComponentToRightColumn(mFilterByUserBox)
 		                        .getPanel();
 	}
@@ -80,7 +92,8 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 	@Override
 	protected void afterTestConnection(boolean connectionSuccessful)
 	{
-		if (connectionSuccessful) {
+		if (connectionSuccessful)
+		{
 			new FetchProjectsTask().queue();
 		}
 	}
@@ -89,6 +102,7 @@ public class TaigaRepositoryEditor extends BaseRepositoryEditor<TaigaRepository>
 	public void apply()
 	{
 		super.apply();
+		myRepository.setWebUrl(mWebUrlText.getText());
 		myRepository.setFilterByUser(mFilterByUserBox.isSelected());
 		myRepository.setSelectedProject((TaigaProject) mProjectBox.getSelectedItem());
 		myTestButton.setEnabled(myRepository.isConfigured());

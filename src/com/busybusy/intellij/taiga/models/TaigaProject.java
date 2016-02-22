@@ -123,7 +123,7 @@ public class TaigaProject
 		@Override
 		public String getProjectTitle()
 		{
-			return "-- Select A Project --";
+			return "-- Select A Project (Required) --";
 		}
 
 		@Override

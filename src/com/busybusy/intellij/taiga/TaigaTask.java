@@ -27,7 +27,6 @@ public class TaigaTask extends Task implements Comparable<TaigaTask>
 	TaigaProject mProject;
 	TaigaRepository mRepository;
 	TaigaRemoteTask mTask;
-	String mRepositoryURL;
 	public static final String kProjectRef = "/project/";
 	public static final String kTaskRef = "/task/";
 
@@ -35,7 +34,6 @@ public class TaigaTask extends Task implements Comparable<TaigaTask>
 	{
 		mRepository = repository;
 		mTask = task;
-		mRepositoryURL = repository.getUrl();
 
 		for (TaigaProject iter : mRepository.getProjectList()) {
 			if (iter.getProjectId().equals(mTask.getProjectId())) {
@@ -134,7 +132,7 @@ public class TaigaTask extends Task implements Comparable<TaigaTask>
 	@Override
 	public String getIssueUrl()
 	{
-		return mRepositoryURL.replace("/api/v1","") + kProjectRef + mProject.getSlug() + kTaskRef + mTask.getRef();
+		return mRepository.getWebUrl() + kProjectRef + mProject.getSlug() + kTaskRef + mTask.getRef();
 	}
 
 	@Nullable
